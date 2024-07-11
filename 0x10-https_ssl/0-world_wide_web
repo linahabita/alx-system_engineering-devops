@@ -12,11 +12,12 @@ query_dns() {
     echo "The subdomain ${subdomain} is a ${record_type} record and points to ${dns_output}"
 }
 
-if [ $# == 1 ]; then
-    query_dns "www" "${domain}"
-    query_dns "lb-01" "${domain}"
-    query_dns "web-01" "${domain}"
-    query_dns "web-02" "${domain}"
+if [ $# -eq 1 ]; then
+    domain="$1"
+    query_dns "${domain}" "www"
+    query_dns "${domain}" "lb-01"
+    query_dns "${domain}" "web-01"
+    query_dns "${domain}" "web-02"
 else
     query_dns "${1}" "${2}"
 fi
