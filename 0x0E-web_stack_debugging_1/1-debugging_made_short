@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-#configures a server to listening on port 80 of all servers active IPv4 IPs
+# configures a server to listening on port 80 of all servers active IPv4 IPs
 
 apt-get update
 apt-get install -y nginx
-echo "server { listen 80; server_name _; location / { root /var/www/html; index index.html; }}" > /etc/nginx/sites-available/default
+echo "server { listen 80; server_name _; root /var/www/html; index index.html; }" > /etc/nginx/sites-available/default
 systemctl reload nginx
-
+curl 0:80
