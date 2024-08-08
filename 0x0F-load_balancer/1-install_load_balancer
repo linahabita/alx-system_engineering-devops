@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Configures a new Ubuntu machine to install and configure HAProxy
+
+sudo apt-get update
+sudo apt-get install haproxy -y
+
+sudo bash -c 'cat > /etc/haproxy/haproxy.cfg <<EOF
+frontend http_front
+    bind *:80
+    default_backend http_back
+
+backend http_back
+    balance roundrobin
+    server web01 52.205.75.31:80 check
+    server web02 100.25.177.142:80 check
+EOF'
+sudo service haproxy start
