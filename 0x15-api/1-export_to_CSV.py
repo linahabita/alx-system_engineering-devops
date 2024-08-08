@@ -1,35 +1,36 @@
 #!/usr/bin/python3
-"""Exports to-do list information for a given employee ID to CSV format."""
-
+"""
+this module is for expermenting a fake API
+"""
 import csv
 import requests
 import sys
 
-
 if __name__ == "__main__":
-    # Get the user ID from the command-line arguments provided to the script
-    user_id = sys.argv[1]
 
-    # Define the base URL for the JSON API
-    url = "https://jsonplaceholder.typicode.com/"
+    employee_id = int(sys.argv[1])
 
-    # Fetch user information from the API and
-    #   convert the response to a JSON object
-    user = requests.get(url + "users/{}".format(user_id)).json()
+    url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
 
-    # Extract the username from the user data
-    username = user.get("username")
+    response = requests.get(url)
+    response_json = response.json()
+    employee_name = response_json['username']
 
-    # Fetch the to-do list items associated with the
-    #   given user ID and convert the response to a JSON object
-    todos = requests.get(url + "todos", params={"userId": user_id}).json()
+    todos_url = (
+        f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}"
+    )
+    todos_response = requests.get(todos_url)
+    todos_data = todos_response.json()
+    csv_file = f'{employee_id}.csv'
+    with open(csv_file, 'w', newline='') as file:
+        writer = csv.writer(file, quoting=csv.QUOTE_ALL)
 
-    # Use list comprehension to iterate over the to-do list items
-    # Write each item's details (user ID, username, completion status,
-    #   and title) as a row in the CSV file
-    with open("{}.csv".format(user_id), "w", newline="") as csvfile:
-        writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
-        [writer.writerow(
-            [user_id, username, t.get("completed"), t.get("title")]
-         ) for t in todos]
+        for task in todos_data:
+            writer.writerow(
+                    [employee_id,
+                        employee_name,
+                        task['completed'],
+                        task['title']]
+                    )
 
+    print("data has been written")
